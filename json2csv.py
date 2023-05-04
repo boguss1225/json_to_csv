@@ -2,7 +2,7 @@ import pandas as pd
 import json
 import glob
 
-TARGET_PATH = "label/float_bbox/TL1"
+TARGET_PATH = "../images-original_temp"
 
 def convert_json_to_csv(filename, out):
     s = json.load(open(filename, 'r'))
@@ -18,8 +18,32 @@ def convert_json_to_csv(filename, out):
         xmax = ann['points'][1][0]
         ymax = ann['points'][1][1]
 
+        # reversed value check
+        if(xmin>xmax): xmin,xmax=swap(xmin,xmax)
+        if(ymin>ymax): ymin,ymax=swap(ymin,ymax)
+
+        # check value validity
+        if(xmax > w): 
+            print(filename, "] out of bound xmax:",xmax) 
+            quit()
+        if(ymax > h): 
+            print(filename, "] out of bound ymax:",ymax) 
+            quit()
+        if(xmin < 0): 
+            print(filename, "] out of bound xmin:",xmin) 
+            quit()
+        if(ymin < 0): 
+            print(filename, "] out of bound ymin:",ymin) 
+            quit()
+
         out.write('{},{},{},{},{},{},{},{}\n'.format(
-            filename_base, w, h, label, xmin, ymin, xmax, ymax))
+            filename_base, int(w), int(h), label, int(xmin), int(ymin), int(xmax), int(ymax)))
+
+def swap(x,y):
+    temp = x
+    x = y
+    y = temp
+    return x, y
 
 if __name__ == "__main__":
     # define save csv file
