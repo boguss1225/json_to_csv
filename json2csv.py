@@ -2,7 +2,7 @@ import pandas as pd
 import json
 import glob
 
-TARGET_PATH = "../images-original_temp"
+TARGET_PATH = "/home/hemyo/Desktop/1_data/3_TUNA_PROTOTYPE/cage"
 
 def convert_json_to_csv(filename, out):
     s = json.load(open(filename, 'r'))
@@ -51,8 +51,11 @@ if __name__ == "__main__":
     out = open(out_file, 'w')
     out.write('filename,width,height,class,xmin,ymin,xmax,ymax\n')
 
+    json_list = glob.glob(TARGET_PATH+"/*.json")
+    print(len(json_list), "json files are globbed")
+
     # convert json to csv
-    for filename in glob.glob(TARGET_PATH+"/*.json"):
+    for filename in json_list:
         convert_json_to_csv(filename, out)
 
     out.close()
