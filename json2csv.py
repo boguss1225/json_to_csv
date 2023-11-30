@@ -2,7 +2,7 @@ import pandas as pd
 import json
 import glob
 
-TARGET_PATH = "/home/hemyo/Desktop/1_data/3_TUNA_PROTOTYPE/cage"
+TARGET_PATH = "/home/hemyo/Desktop/1_data/3_Annoatation_data/2_9frame_interval_cropped/YANMAR/Mark Gatt - Good Quality Transfer – 2021-06-03"
 
 def convert_json_to_csv(filename, out):
     s = json.load(open(filename, 'r'))
