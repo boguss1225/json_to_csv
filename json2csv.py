@@ -1,8 +1,9 @@
 import pandas as pd
 import json
+import os
 import glob
 
-TARGET_PATH = "/home/hemyo/Desktop/1_data/3_Annoatation_data/2_9frame_interval_cropped/YANMAR/Mark Gatt - Good Quality Transfer – 2021-06-03"
+TARGET_PATH = "/run/user/1000/gvfs/smb-share:server=10.50.1.4,share=datalakev1/04_RV_workspace/01_Tuna/testset_task/testset_v1/"
 
 def convert_json_to_csv(filename, out):
     s = json.load(open(filename, 'r'))
@@ -10,6 +11,8 @@ def convert_json_to_csv(filename, out):
     filename_base = s['imagePath']
     w = s['imageWidth']
     h = s['imageHeight']
+    # w = 1360
+    # h = 1024
 
     for ann in s['shapes']:
         label = ann['label']
@@ -24,17 +27,21 @@ def convert_json_to_csv(filename, out):
 
         # check value validity
         if(xmax > w): 
-            print(filename, "] out of bound xmax:",xmax) 
-            quit()
+            print(filename, "] out of bound xmax:",xmax)
+            xmax = w
+            # quit()
         if(ymax > h): 
             print(filename, "] out of bound ymax:",ymax) 
-            quit()
+            ymax = h
+            # quit()
         if(xmin < 0): 
-            print(filename, "] out of bound xmin:",xmin) 
-            quit()
+            print(filename, "] out of bound xmin:",xmin)
+            xmin = 0
+            # quit()
         if(ymin < 0): 
             print(filename, "] out of bound ymin:",ymin) 
-            quit()
+            ymin = 0
+            # quit()
 
         out.write('{},{},{},{},{},{},{},{}\n'.format(
             filename_base, int(w), int(h), label, int(xmin), int(ymin), int(xmax), int(ymax)))
@@ -47,7 +54,7 @@ def swap(x,y):
 
 if __name__ == "__main__":
     # define save csv file
-    out_file = TARGET_PATH + '.csv'
+    out_file = TARGET_PATH + os.path.basename(os.path.normpath(TARGET_PATH))+ '.csv'
     out = open(out_file, 'w')
     out.write('filename,width,height,class,xmin,ymin,xmax,ymax\n')
 
